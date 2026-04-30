@@ -14,10 +14,18 @@ local mapSelectedCb: ((string) -> ())? = nil
 
 function MapSelectUI.build()
 	local pg = Players.LocalPlayer:WaitForChild("PlayerGui")
+
+	for _, child in ipairs(pg:GetChildren()) do
+		if child:IsA("ScreenGui") and child.Name == "MapSelect" then
+			child:Destroy()
+		end
+	end
+
 	screen = Instance.new("ScreenGui")
 	screen.Name = "MapSelect"
 	screen.Enabled = false
 	screen.ResetOnSpawn = false
+	screen.DisplayOrder = 10
 	screen.Parent = pg
 end
 

@@ -17,13 +17,16 @@
         "$path": "src/shared/Remotes"
       },
       "Shared": {
-        "$path": "src/shared/Shared"
+        "$className": "Folder"
       }
     },
 
     "ServerScriptService": {
       "Main": {
         "$path": "src/server/Main.server.lua"
+      },
+      "Services": {
+        "$path": "src/server/Services"
       },
       "Handlers": {
         "$path": "src/server/Handlers"

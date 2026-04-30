@@ -26,7 +26,7 @@ return {
 		unlockRequirement = { type = "complete_map", value = "forest_01" },
 		duration = 900,
 		spawnTable = "desert_basic",
-		bossSchedule = { [300] = "scorpion_king", [900] = "sand_wraith" },
+		bossSchedule = { [300] = "brute", [900] = "treant" },
 		modelName = "Desert01",
 		spawnRadius = 120,
 	},

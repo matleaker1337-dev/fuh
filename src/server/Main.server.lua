@@ -25,6 +25,7 @@ local MapService      = require(Services.MapService)
 local CombatService   = require(Services.CombatService)
 local PickupService   = require(Services.PickupService)
 local RemoteHandler   = require(Handlers.RemoteHandler)
+local RateLimit       = require(Handlers.RateLimit)
 
 -- Порядок важен: сначала то, у чего нет зависимостей.
 Remotes.init()
@@ -52,6 +53,7 @@ end)
 Players.PlayerRemoving:Connect(function(player)
 	MatchService.onPlayerLeft(player)
 	DataService.saveProfile(player)
+	RateLimit.reset(player)
 end)
 
 game:BindToClose(function()

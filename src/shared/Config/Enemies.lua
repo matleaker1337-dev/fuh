@@ -20,7 +20,7 @@ return {
 	basic_zombie = {
 		id = "basic_zombie",
 		displayName = "Zombie",
-		hp = 35, speed = 8, damage = 8,
+		hp = 25, speed = 5, damage = 4,
 		aiState = "seek",
 		xp = 1,
 		size = Vector3.new(2, 4, 2),
@@ -30,7 +30,7 @@ return {
 	fast_skeleton = {
 		id = "fast_skeleton",
 		displayName = "Skeleton",
-		hp = 22, speed = 14, damage = 7,
+		hp = 18, speed = 9, damage = 5,
 		aiState = "swarm",
 		xp = 2,
 		size = Vector3.new(1.8, 3.5, 1.8),
@@ -40,10 +40,10 @@ return {
 	archer_goblin = {
 		id = "archer_goblin",
 		displayName = "Goblin Archer",
-		hp = 25, speed = 6, damage = 8,
+		hp = 20, speed = 5, damage = 5,
 		aiState = "ranged",
 		rangedRange = { 18, 28 },
-		rangedCooldown = 2.0,
+		rangedCooldown = 3.0,
 		xp = 3,
 		size = Vector3.new(1.8, 3.5, 1.8),
 		color = Color3.fromRGB(120, 180, 80),
@@ -51,7 +51,7 @@ return {
 	runner = {
 		id = "runner",
 		displayName = "Runner",
-		hp = 16, speed = 18, damage = 7,
+		hp = 14, speed = 12, damage = 4,
 		aiState = "seek",
 		xp = 2,
 		size = Vector3.new(1.4, 3, 1.4),
@@ -70,7 +70,7 @@ return {
 	splitter = {
 		id = "splitter",
 		displayName = "Splitter",
-		hp = 60, speed = 9, damage = 10,
+		hp = 45, speed = 7, damage = 7,
 		aiState = "seek",
 		xp = 4,
 		size = Vector3.new(2.4, 3.6, 2.4),
@@ -80,7 +80,7 @@ return {
 	splitter_mini = {
 		id = "splitter_mini",
 		displayName = "Spore",
-		hp = 12, speed = 13, damage = 5,
+		hp = 8, speed = 9, damage = 3,
 		aiState = "swarm",
 		xp = 1,
 		size = Vector3.new(1.1, 2, 1.1),

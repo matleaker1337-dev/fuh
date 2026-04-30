@@ -39,15 +39,17 @@ end
 function MenuController.onBootstrap(boot)
 	profile = boot and boot.profile
 	MainMenuUI.setProfile(profile)
-	if state == "MainMenu" then
-		MenuController.goto("MainMenu")
-	end
+	-- Применяем текущее состояние (MainMenu стартует скрытым, показываем
+	-- только если игрок ещё не ушёл с экрана главного меню).
+	MenuController.goto(state)
 end
 
 function MenuController.goto(newState: string)
 	state = newState
-	MainMenuUI.setVisible(state == "MainMenu")
-	MapSelectUI.setVisible(state == "MapSelect")
+	local isMainMenu = (state == "MainMenu")
+	local isMapSelect = (state == "MapSelect")
+	MainMenuUI.setVisible(isMainMenu)
+	MapSelectUI.setVisible(isMapSelect)
 	-- Прочие UI (HUD, Pause, Results) управляются своими контроллерами
 	-- через подписку на MatchStateChanged.
 end

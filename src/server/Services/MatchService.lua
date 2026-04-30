@@ -34,6 +34,12 @@ function MatchService.start(player: Player, mapId: string, charId: string)
 	return true
 end
 
+function MatchService.leave(player: Player)
+	if not activeMatches[player] then return end
+	activeMatches[player] = nil
+	Remotes.fireClient(player, "MatchStateChanged", { state = "Ended" })
+end
+
 function MatchService.onPlayerLeft(player: Player)
 	activeMatches[player] = nil
 end

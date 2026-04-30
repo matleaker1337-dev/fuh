@@ -16,6 +16,8 @@ local NotificationUI = require(script.Parent.Parent.UI.NotificationUI)
 
 local HUDController = {}
 
+local lastWaveNotified = 0
+
 function HUDController.init()
 	HUDUI.build()
 	NotificationUI.build()
@@ -29,13 +31,16 @@ function HUDController.init()
 		if running then
 			MainMenuUI.setVisible(false)
 			MapSelectUI.setVisible(false)
+			lastWaveNotified = 0
 		end
 	end)
 	Remotes.onClientEvent("Notification", function(payload)
 		NotificationUI.show(payload.text or "", payload.color)
 	end)
 	Remotes.onClientEvent("WaveChanged", function(payload)
-		local w = payload.wave or 1
+		local w = payload.index or payload.wave or 1
+		if w == lastWaveNotified then return end
+		lastWaveNotified = w
 		if payload.isBoss then
 			NotificationUI.show("BOSS WAVE " .. tostring(w), Color3.fromRGB(255, 80, 80))
 		else

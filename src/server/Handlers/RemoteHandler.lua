@@ -43,6 +43,11 @@ function RemoteHandler.init()
 		-- TODO: forward to a MovementService
 	end)
 
+	Remotes.onEvent("LeaveMatch", function(player)
+		if not RateLimit.allow(player, "LeaveMatch", 2) then return end
+		MatchService.leave(player)
+	end)
+
 	Remotes.onEvent("SaveSettings", function(player, payload)
 		if not RateLimit.allow(player, "SaveSettings", 2) then return end
 		DataService.update(player, function(p)

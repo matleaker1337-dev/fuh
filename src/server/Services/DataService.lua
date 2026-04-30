@@ -24,7 +24,23 @@ local function deepClone(t)
 end
 
 local STORE_NAME = "PlayerProfiles_v1"
-local store = DataStoreService:GetDataStore(STORE_NAME)
+-- В Studio без "Enable Studio Access to API Services" GetDataStore теперь
+-- кидает ошибку при require'e модуля и валит весь сервер. Оборачиваем в
+-- pcall: если DataStore недоступен — работаем в режиме in-memory only,
+-- профили живут до конца сессии.
+local store
+do
+	local ok, result = pcall(function()
+		return DataStoreService:GetDataStore(STORE_NAME)
+	end)
+	if ok then
+		store = result
+	else
+		warn("[DataService] DataStore unavailable, using in-memory only: "
+			.. tostring(result))
+		store = nil
+	end
+end
 
 local profiles: { [Player]: any } = {}
 
@@ -43,8 +59,11 @@ function DataService.init()
 end
 
 function DataService.loadProfile(player: Player)
-	local key = "player_" .. tostring(player.UserId)
-	local data = DataStoreSafe.get(store, key)
+	local data
+	if store then
+		local key = "player_" .. tostring(player.UserId)
+		data = DataStoreSafe.get(store, key)
+	end
 	if data and typeof(data) == "table" then
 		profiles[player] = data
 	else
@@ -56,6 +75,11 @@ function DataService.saveProfile(player: Player)
 	local p = profiles[player]
 	if not p then return end
 	p.updatedAt = os.time()
+	if not store then
+		-- Без DataStore просто оставляем профиль в памяти — он умрёт
+		-- вместе с сессией Studio, но это ожидаемо для unpublished place.
+		return
+	end
 	local key = "player_" .. tostring(player.UserId)
 	local ok = DataStoreSafe.set(store, key, p)
 	if ok then

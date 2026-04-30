@@ -4,21 +4,39 @@
     "$className": "DataModel",
 
     "ReplicatedStorage": {
+      "Modules": {
+        "$path": "src/shared/Modules"
+      },
+      "Config": {
+        "$path": "src/shared/Config"
+      },
+      "Types": {
+        "$path": "src/shared/Types"
+      },
+      "Remotes": {
+        "$path": "src/shared/Remotes"
+      },
       "Shared": {
-        "$path": "src/shared"
+        "$path": "src/shared/Shared"
       }
     },
 
     "ServerScriptService": {
-      "Server": {
-        "$path": "src/server"
+      "Main": {
+        "$path": "src/server/Main.server.lua"
+      },
+      "Handlers": {
+        "$path": "src/server/Handlers"
       }
     },
 
     "StarterPlayer": {
       "StarterPlayerScripts": {
-        "Client": {
-          "$path": "src/client"
+        "Controllers": {
+          "$path": "src/client/Controllers"
+        },
+        "UI": {
+          "$path": "src/client/UI"
         }
       }
     },
@@ -31,38 +49,24 @@
         "$className": "Part",
         "$properties": {
           "Anchored": true,
-          "Color": [
-            0.38823,
-            0.37254,
-            0.38823
-          ],
+          "Color": [0.38823, 0.37254, 0.38823],
           "Locked": true,
-          "Position": [
-            0,
-            -10,
-            0
-          ],
-          "Size": [
-            512,
-            20,
-            512
-          ]
+          "Position": [0, -10, 0],
+          "Size": [512, 20, 512]
         }
       }
     },
+
     "Lighting": {
       "$properties": {
-        "Ambient": [
-          0,
-          0,
-          0
-        ],
+        "Ambient": [0, 0, 0],
         "Brightness": 2,
         "GlobalShadows": true,
         "Outlines": false,
         "Technology": "Voxel"
       }
     },
+
     "SoundService": {
       "$properties": {
         "RespectFilteringEnabled": true

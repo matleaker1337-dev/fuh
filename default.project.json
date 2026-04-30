@@ -25,6 +25,9 @@
       "Main": {
         "$path": "src/server/Main.server.lua"
       },
+      "Services": {
+        "$path": "src/server/Services"
+      },
       "Handlers": {
         "$path": "src/server/Handlers"
       }

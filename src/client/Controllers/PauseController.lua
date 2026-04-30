@@ -33,11 +33,12 @@ function PauseController.init()
 	end)
 
 	UserInputService.InputBegan:Connect(function(input, processed)
-		if processed then return end
 		if input.KeyCode == Enum.KeyCode.Escape and inMatch then
 			paused = not paused
 			PauseMenuUI.setVisible(paused)
+			return
 		end
+		if processed then return end
 	end)
 
 	Remotes.onClientEvent("MatchStateChanged", function(payload)

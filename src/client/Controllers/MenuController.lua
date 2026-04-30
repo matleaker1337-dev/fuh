@@ -32,6 +32,8 @@ function MenuController.init()
 			MenuController.goto("InMatch")
 		elseif payload.state == "Results" then
 			MenuController.goto("Results")
+		elseif payload.state == "Ended" then
+			MenuController.goto("MainMenu")
 		end
 	end)
 end

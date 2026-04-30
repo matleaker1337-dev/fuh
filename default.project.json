@@ -22,6 +22,7 @@
     },
 
     "ServerScriptService": {
+      "$ignoreUnknownInstances": false,
       "Main": {
         "$path": "src/server/Main.server.lua"
       },
@@ -35,6 +36,7 @@
 
     "StarterPlayer": {
       "StarterPlayerScripts": {
+        "$ignoreUnknownInstances": false,
         "Controllers": {
           "$path": "src/client/Controllers"
         },

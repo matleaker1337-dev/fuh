@@ -64,4 +64,8 @@ game:BindToClose(function()
 	task.wait(3)
 end)
 
-print("[Bullet Heaven] Server boot complete.")
+-- Печатаем полный путь скрипта, чтобы в логах было видно дубликаты:
+-- если в ServerScriptService окажется ещё один Main / Main.server, он
+-- напечатает другой GetFullName() и сразу станет понятно, что Rojo не
+-- единственный, кто запускает серверный bootstrap.
+print(string.format("[Bullet Heaven] Server boot complete @ %s", script:GetFullName()))

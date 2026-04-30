@@ -39,4 +39,7 @@ MenuController.init()
 local boot = Remotes.invokeServer("BootstrapData", {})
 MenuController.onBootstrap(boot)
 
-print("[Bullet Heaven] Client boot complete for", player.Name)
+-- Печатаем полный путь скрипта вместе с именем игрока, чтобы в логах
+-- сразу было видно, если запустился второй Main.client откуда-то ещё.
+print(string.format("[Bullet Heaven] Client boot complete @ %s for %s",
+	script:GetFullName(), player.Name))

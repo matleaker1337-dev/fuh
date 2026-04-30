@@ -12,11 +12,14 @@ local Remotes = require(ReplicatedStorage.Remotes.Remotes)
 local HUDUI = require(script.Parent.Parent.UI.HUDUI)
 local MainMenuUI = require(script.Parent.Parent.UI.MainMenuUI)
 local MapSelectUI = require(script.Parent.Parent.UI.MapSelectUI)
+local NotificationUI = require(script.Parent.Parent.UI.NotificationUI)
 
 local HUDController = {}
 
 function HUDController.init()
 	HUDUI.build()
+	NotificationUI.build()
+
 	Remotes.onClientEvent("PlayerStats", function(payload)
 		HUDUI.update(payload)
 	end)
@@ -26,6 +29,17 @@ function HUDController.init()
 		if running then
 			MainMenuUI.setVisible(false)
 			MapSelectUI.setVisible(false)
+		end
+	end)
+	Remotes.onClientEvent("Notification", function(payload)
+		NotificationUI.show(payload.text or "", payload.color)
+	end)
+	Remotes.onClientEvent("WaveChanged", function(payload)
+		local w = payload.wave or 1
+		if payload.isBoss then
+			NotificationUI.show("BOSS WAVE " .. tostring(w), Color3.fromRGB(255, 80, 80))
+		else
+			NotificationUI.show("Wave " .. tostring(w), Color3.fromRGB(255, 220, 120))
 		end
 	end)
 end

@@ -13,6 +13,16 @@ local DataStoreSafe = require(ReplicatedStorage.Modules.DataStoreSafe)
 
 local DataService = {}
 
+local function deepClone(t)
+	local clone = table.clone(t)
+	for k, v in pairs(clone) do
+		if type(v) == "table" then
+			clone[k] = deepClone(v)
+		end
+	end
+	return clone
+end
+
 local STORE_NAME = "PlayerProfiles_v1"
 local store = DataStoreService:GetDataStore(STORE_NAME)
 
@@ -38,7 +48,7 @@ function DataService.loadProfile(player: Player)
 	if data and typeof(data) == "table" then
 		profiles[player] = data
 	else
-		profiles[player] = table.clone(DEFAULT_PROFILE)
+		profiles[player] = deepClone(DEFAULT_PROFILE)
 	end
 end
 
@@ -47,8 +57,12 @@ function DataService.saveProfile(player: Player)
 	if not p then return end
 	p.updatedAt = os.time()
 	local key = "player_" .. tostring(player.UserId)
-	DataStoreSafe.set(store, key, p)
-	profiles[player] = nil
+	local ok = DataStoreSafe.set(store, key, p)
+	if ok then
+		profiles[player] = nil
+	else
+		warn("[DataService] Failed to save profile for", player.Name, "- keeping in memory")
+	end
 end
 
 function DataService.getProfile(player: Player)

@@ -1,0 +1,199 @@
+--!strict
+--[[
+    File:    Upgrades.lua
+    Type:    ModuleScript
+    Place:   game.ReplicatedStorage.Config.Upgrades
+    Purpose: Каталог апгрейдов и helper, формирующий пул для конкретного
+             игрока и уровня. См. PLAN §4.
+
+             Поля:
+               id              — уникальный id апгрейда (для takenUpgrades)
+               weapon          — id оружия, к которому привязан апгрейд (опц.)
+               passive         — категория пассивки (опц.)
+               level           — отображаемый уровень оружия (опц., для UI)
+               weight          — вес в weighted random pool
+               rarity          — common/uncommon/rare/epic/legendary
+               prerequisites   — список id'шников, которые должны быть взяты
+               effect          — таблица эффектов:
+                 unlock        — id оружия, которое добавить в лоадаут
+                 projectiles   — +N снарядов к этому оружию
+                 weaponDamage  — +N к base damage этого оружия
+                 maxHp         — +N к maxHp игрока (хилит на ту же дельту)
+                 moveSpeed     — +X (доля, 0.10 = +10%)
+                 pickupRadius  — +N к радиусу подбора
+                 damageMult    — +X (доля, к глобальному множителю урона)
+                 luck          — +X (доля)
+                 critChance    — +X (доля, 0.10 = +10% шанс крита)
+                 critMult      — +X (доля, к множителю крит-урона; default = 1.5)
+                 bulletRadius  — +N к радиусу попадания обычной пули
+                 aoeRadius     — +N к радиусу AoE (фаербол и др.)
+]]
+
+local Upgrades = {}
+
+Upgrades.list = {
+	{ id = "knife_unlock", weapon = "knife", level = 1, weight = 100, rarity = "common",
+		displayName = "KNIFE",
+		description = "Throws a homing knife that pierces through every enemy in its path.",
+		effect = { unlock = "knife" } },
+	{ id = "knife_count_1", weapon = "knife", level = 2, weight = 70, rarity = "uncommon",
+		prerequisites = { "knife_unlock" },
+		displayName = "+1 KNIFE",
+		description = "Throw 1 extra knife per attack.",
+		effect = { projectiles = 1 } },
+	{ id = "knife_count_2", weapon = "knife", level = 3, weight = 45, rarity = "rare",
+		prerequisites = { "knife_count_1" },
+		displayName = "+1 KNIFE",
+		description = "Throw 1 more knife per attack.",
+		effect = { projectiles = 1 } },
+	{ id = "knife_damage_1", weapon = "knife", weight = 70, rarity = "uncommon",
+		prerequisites = { "knife_unlock" },
+		displayName = "KNIFE DAMAGE",
+		description = "+3 damage to every knife you throw.",
+		effect = { weaponDamage = 3 } },
+	{ id = "knife_damage_2", weapon = "knife", weight = 50, rarity = "rare",
+		prerequisites = { "knife_damage_1" },
+		displayName = "KNIFE DAMAGE",
+		description = "+5 damage to every knife you throw.",
+		effect = { weaponDamage = 5 } },
+
+	{ id = "fireball_unlock", weapon = "fireball", level = 1, weight = 100, rarity = "common",
+		displayName = "FIREBALL",
+		description = "Drops a fireball from the sky onto the nearest enemy. Explodes for AoE damage.",
+		effect = { unlock = "fireball" } },
+	{ id = "fireball_count_1", weapon = "fireball", level = 2, weight = 60, rarity = "rare",
+		prerequisites = { "fireball_unlock" },
+		displayName = "+1 FIREBALL",
+		description = "Drops 1 extra fireball each cast (targets a 2nd enemy).",
+		effect = { projectiles = 1 } },
+	{ id = "fireball_damage_1", weapon = "fireball", weight = 70, rarity = "uncommon",
+		prerequisites = { "fireball_unlock" },
+		displayName = "FIREBALL DAMAGE",
+		description = "+12 damage to fireball explosions.",
+		effect = { weaponDamage = 12 } },
+	{ id = "fireball_damage_2", weapon = "fireball", weight = 50, rarity = "rare",
+		prerequisites = { "fireball_damage_1" },
+		displayName = "FIREBALL DAMAGE",
+		description = "+18 damage to fireball explosions.",
+		effect = { weaponDamage = 18 } },
+
+	{ id = "max_hp_1", passive = "max_hp", weight = 70, rarity = "common",
+		displayName = "VITALITY",
+		description = "+20 max HP. Heals you for 20 immediately.",
+		effect = { maxHp = 20 } },
+	{ id = "speed_1", passive = "move_speed", weight = 60, rarity = "common",
+		displayName = "AGILITY",
+		description = "+10% movement speed. Move faster across the map.",
+		effect = { moveSpeed = 0.10 } },
+	{ id = "magnet_1", passive = "pickup", weight = 60, rarity = "common",
+		displayName = "MAGNET",
+		description = "+2 pickup radius. Vacuum up XP from farther away.",
+		effect = { pickupRadius = 2 } },
+	{ id = "damage_1", passive = "damage_mult", weight = 60, rarity = "uncommon",
+		displayName = "EMPOWER",
+		description = "+10% damage from ALL your weapons (knife, fireball, bolt).",
+		effect = { damageMult = 0.10 } },
+	{ id = "luck_1", passive = "luck", weight = 50, rarity = "rare",
+		displayName = "LUCK",
+		description = "+5% luck. Slightly raises chance of rare upgrades and crit-rolls.",
+		effect = { luck = 0.05 } },
+	{ id = "crit_chance_1", passive = "crit_chance", weight = 55, rarity = "uncommon",
+		displayName = "CRIT CHANCE",
+		description = "+10% chance for any hit to crit (1.5x damage).",
+		effect = { critChance = 0.10 } },
+	{ id = "crit_chance_2", passive = "crit_chance", weight = 35, rarity = "rare",
+		prerequisites = { "crit_chance_1" },
+		displayName = "CRIT CHANCE",
+		description = "+10% more crit chance.",
+		effect = { critChance = 0.10 } },
+	{ id = "crit_mult_1", passive = "crit_mult", weight = 45, rarity = "rare",
+		prerequisites = { "crit_chance_1" },
+		displayName = "CRIT POWER",
+		description = "+50% crit damage (your crits hit harder).",
+		effect = { critMult = 0.5 } },
+	{ id = "hitbox_1", passive = "hitbox", weight = 60, rarity = "uncommon",
+		displayName = "BIGGER BULLETS",
+		description = "+0.5 to hit radius of all bullets and knives. Easier to hit enemies.",
+		effect = { bulletRadius = 0.5 } },
+	{ id = "hitbox_2", passive = "hitbox", weight = 40, rarity = "rare",
+		prerequisites = { "hitbox_1" },
+		displayName = "BIGGER BULLETS",
+		description = "+0.5 more to bullet hit radius.",
+		effect = { bulletRadius = 0.5 } },
+	{ id = "aoe_radius_1", weapon = "fireball", passive = "aoe_radius", weight = 50, rarity = "uncommon",
+		prerequisites = { "fireball_unlock" },
+		displayName = "BLAST RADIUS",
+		description = "+2 to fireball explosion radius (covers more enemies per drop).",
+		effect = { aoeRadius = 2 } },
+	{ id = "xp_gain_1", passive = "xp_gain", weight = 65, rarity = "uncommon",
+		displayName = "+XP GAIN",
+		description = "+25% XP from every enemy you kill.",
+		effect = { xpGain = 0.25 } },
+	{ id = "xp_gain_2", passive = "xp_gain", weight = 40, rarity = "rare",
+		prerequisites = { "xp_gain_1" },
+		displayName = "+XP GAIN",
+		description = "+25% more XP from every enemy.",
+		effect = { xpGain = 0.25 } },
+	{ id = "regen_1", passive = "regen", weight = 60, rarity = "uncommon",
+		displayName = "REGEN",
+		description = "Recover +1 HP every second.",
+		effect = { regen = 1 } },
+	{ id = "regen_2", passive = "regen", weight = 35, rarity = "rare",
+		prerequisites = { "regen_1" },
+		displayName = "REGEN",
+		description = "Recover +1 more HP per second.",
+		effect = { regen = 1 } },
+	{ id = "armor_1", passive = "armor", weight = 60, rarity = "uncommon",
+		displayName = "ARMOR",
+		description = "Reduce all incoming damage by 2 (min 1).",
+		effect = { armor = 2 } },
+	{ id = "armor_2", passive = "armor", weight = 40, rarity = "rare",
+		prerequisites = { "armor_1" },
+		displayName = "ARMOR",
+		description = "Reduce all incoming damage by 3 more (min 1).",
+		effect = { armor = 3 } },
+	{ id = "cooldown_1", passive = "cooldown", weight = 55, rarity = "uncommon",
+		displayName = "COOLDOWN",
+		description = "-10% cooldown to ALL weapons. They fire faster.",
+		effect = { cooldown = 0.10 } },
+	{ id = "cooldown_2", passive = "cooldown", weight = 35, rarity = "rare",
+		prerequisites = { "cooldown_1" },
+		displayName = "COOLDOWN",
+		description = "-10% more cooldown to all weapons.",
+		effect = { cooldown = 0.10 } },
+	{ id = "amount_1", passive = "amount", weight = 35, rarity = "rare",
+		displayName = "AMOUNT",
+		description = "+1 projectile to ALL weapons (knife, fireball, bolt) at once.",
+		effect = { amount = 1 } },
+}
+
+function Upgrades.poolFor(match)
+	local pool = {}
+	local taken = match.takenUpgrades or {}
+	local hasWeapon: { [string]: boolean } = {}
+	for _, w in ipairs(match.loadout.weapons) do
+		hasWeapon[w.id] = true
+	end
+
+	for _, u in ipairs(Upgrades.list) do
+		local skip = false
+		if taken[u.id] then skip = true end
+		if not skip and u.effect and u.effect.unlock and hasWeapon[u.effect.unlock] then
+			skip = true
+		end
+		if not skip and u.weapon and not (u.effect and u.effect.unlock)
+			and not hasWeapon[u.weapon]
+		then
+			skip = true
+		end
+		if not skip and u.prerequisites then
+			for _, prereq in ipairs(u.prerequisites) do
+				if not taken[prereq] then skip = true; break end
+			end
+		end
+		if not skip then table.insert(pool, u) end
+	end
+	return pool
+end
+
+return Upgrades

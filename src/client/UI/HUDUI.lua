@@ -25,6 +25,8 @@ local XP_TWEEN_INFO = TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDire
 local HP_TWEEN_INFO = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 
 local lastLevel = 1
+local lastHp: number? = nil
+local damageFlash: Frame
 
 function HUDUI.build()
 	local pg = Players.LocalPlayer:WaitForChild("PlayerGui")
@@ -114,6 +116,15 @@ function HUDUI.build()
 	levelLabel = Instance.new("TextLabel")
 	levelLabel.Visible = false
 	levelLabel.Parent = screen
+
+	-- Красная вспышка при получении урона
+	damageFlash = Instance.new("Frame")
+	damageFlash.Size = UDim2.fromScale(1, 1)
+	damageFlash.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	damageFlash.BackgroundTransparency = 1
+	damageFlash.BorderSizePixel = 0
+	damageFlash.ZIndex = 100
+	damageFlash.Parent = screen
 end
 
 function HUDUI.setVisible(v: boolean)
@@ -125,6 +136,14 @@ local function tweenSize(frame: Frame, target: UDim2, info: TweenInfo)
 end
 
 function HUDUI.update(stats)
+	-- Вспышка при потере HP
+	if damageFlash and stats.hp and lastHp and stats.hp < lastHp then
+		damageFlash.BackgroundTransparency = 0.6
+		TweenService:Create(damageFlash, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+			{ BackgroundTransparency = 1 }):Play()
+	end
+	if stats.hp then lastHp = stats.hp end
+
 	if hpBar and stats.hp and stats.maxHp and stats.maxHp > 0 then
 		local pct = math.clamp(stats.hp / stats.maxHp, 0, 1)
 		tweenSize(hpBar, UDim2.fromScale(pct, 1), HP_TWEEN_INFO)

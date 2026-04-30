@@ -21,6 +21,7 @@ local HUDController      = require(Controllers.HUDController)
 local UpgradeController  = require(Controllers.UpgradeController)
 local CombatController   = require(Controllers.CombatController)
 local EffectsController  = require(Controllers.EffectsController)
+local PauseController    = require(Controllers.PauseController)
 
 local player = Players.LocalPlayer
 
@@ -31,6 +32,7 @@ HUDController.init()
 UpgradeController.init()
 CombatController.init()
 MapSelectController.init()
+PauseController.init()
 MenuController.init()
 
 -- Запрос профиля. Сервер должен ответить мгновенно.

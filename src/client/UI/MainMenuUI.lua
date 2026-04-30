@@ -11,6 +11,7 @@ local Players = game:GetService("Players")
 local MainMenuUI = {}
 
 local screen: ScreenGui
+local coinsLabel: TextLabel
 local playClickedCb: () -> ()? = nil
 local settingsClickedCb: () -> ()? = nil
 
@@ -54,6 +55,18 @@ function MainMenuUI.build()
 	title.Font = Enum.Font.GothamBlack
 	title.Parent = screen
 
+	-- Монеты
+	coinsLabel = Instance.new("TextLabel")
+	coinsLabel.Size = UDim2.new(0, 200, 0, 36)
+	coinsLabel.Position = UDim2.new(1, -220, 0, 20)
+	coinsLabel.BackgroundTransparency = 1
+	coinsLabel.Text = ""
+	coinsLabel.TextColor3 = Color3.fromRGB(255, 220, 80)
+	coinsLabel.Font = Enum.Font.GothamBold
+	coinsLabel.TextScaled = true
+	coinsLabel.TextXAlignment = Enum.TextXAlignment.Right
+	coinsLabel.Parent = screen
+
 	local play = makeButton(screen, "PLAY", 320)
 	local sett = makeButton(screen, "SETTINGS", 380)
 
@@ -65,7 +78,11 @@ function MainMenuUI.setVisible(v: boolean)
 	if screen then screen.Enabled = v end
 end
 
-function MainMenuUI.setProfile(p) end -- TODO: показать монеты, ник
+function MainMenuUI.setProfile(p)
+	if not p or not coinsLabel then return end
+	local coins = p.coins or 0
+	coinsLabel.Text = "Coins: " .. tostring(coins)
+end
 
 function MainMenuUI.onPlayClicked(cb) playClickedCb = cb end
 function MainMenuUI.onSettingsClicked(cb) settingsClickedCb = cb end

@@ -32,13 +32,16 @@ local function autoDescribe(opt): string
 	if e.projectiles then table.insert(parts, "+" .. tostring(e.projectiles) .. " projectiles") end
 	if e.maxHp then table.insert(parts, "+" .. tostring(e.maxHp) .. " max HP") end
 	if e.moveSpeed then table.insert(parts, "+" .. math.floor(e.moveSpeed * 100) .. "% speed") end
-	if e.pickupRadius then table.insert(parts, "+" .. tostring(e.pickupRadius) .. " pickup radius") end
 	if e.damageMult then table.insert(parts, "+" .. math.floor(e.damageMult * 100) .. "% damage") end
 	if e.luck then table.insert(parts, "+" .. math.floor(e.luck * 100) .. "% luck") end
 	if e.critChance then table.insert(parts, "+" .. math.floor(e.critChance * 100) .. "% crit chance") end
 	if e.critMult then table.insert(parts, "+" .. math.floor(e.critMult * 100) .. "% crit damage") end
-	if e.bulletRadius then table.insert(parts, "+" .. tostring(e.bulletRadius) .. " bullet radius") end
 	if e.aoeRadius then table.insert(parts, "+" .. tostring(e.aoeRadius) .. " AoE radius") end
+	if e.xpGain then table.insert(parts, "+" .. math.floor(e.xpGain * 100) .. "% XP gain") end
+	if e.regen then table.insert(parts, "+" .. tostring(e.regen) .. " HP/s regen") end
+	if e.armor then table.insert(parts, "-" .. tostring(e.armor) .. " incoming damage") end
+	if e.cooldown then table.insert(parts, "-" .. math.floor(e.cooldown * 100) .. "% cooldown") end
+	if e.amount then table.insert(parts, "+" .. tostring(e.amount) .. " projectiles to all weapons") end
 	return table.concat(parts, "\n")
 end
 

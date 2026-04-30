@@ -46,8 +46,6 @@ return {
 		spin = true,
 		spinSpeed = 12,
 		element = "fire",
-		evolveInto = "infernal_storm",
-		evolveRequiresPassive = "magma_core",
 	},
 	knife = {
 		id = "knife",
@@ -69,6 +67,7 @@ return {
 	aura = {
 		id = "aura",
 		displayName = "Holy Aura",
+		behavior = "aura",
 		damage = 3,
 		cooldown = 0.2,
 		radius = 6,

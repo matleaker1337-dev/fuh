@@ -12,7 +12,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Remotes = require(ReplicatedStorage.Remotes.Remotes)
 
-local Controllers = script.Parent:WaitForChild("Controllers")
+local Controllers = script.Parent.Parent:WaitForChild("Controllers")
 local InputController    = require(Controllers.InputController)
 local CameraController   = require(Controllers.CameraController)
 local MenuController     = require(Controllers.MenuController)

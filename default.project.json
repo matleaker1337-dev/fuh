@@ -17,7 +17,7 @@
         "$path": "src/shared/Remotes"
       },
       "Shared": {
-        "$path": "src/shared/Shared"
+        "$className": "Folder"
       }
     },
 

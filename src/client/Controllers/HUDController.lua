@@ -10,6 +10,8 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Remotes = require(ReplicatedStorage.Remotes.Remotes)
 local HUDUI = require(script.Parent.Parent.UI.HUDUI)
+local MainMenuUI = require(script.Parent.Parent.UI.MainMenuUI)
+local MapSelectUI = require(script.Parent.Parent.UI.MapSelectUI)
 
 local HUDController = {}
 
@@ -19,7 +21,12 @@ function HUDController.init()
 		HUDUI.update(payload)
 	end)
 	Remotes.onClientEvent("MatchStateChanged", function(payload)
-		HUDUI.setVisible(payload.state == "Running")
+		local running = payload.state == "Running"
+		HUDUI.setVisible(running)
+		if running then
+			MainMenuUI.setVisible(false)
+			MapSelectUI.setVisible(false)
+		end
 	end)
 end
 

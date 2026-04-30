@@ -39,7 +39,9 @@ end
 function MenuController.onBootstrap(boot)
 	profile = boot and boot.profile
 	MainMenuUI.setProfile(profile)
-	MenuController.goto("MainMenu")
+	if state == "MainMenu" then
+		MenuController.goto("MainMenu")
+	end
 end
 
 function MenuController.goto(newState: string)

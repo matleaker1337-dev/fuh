@@ -11,6 +11,11 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
+-- Персонаж появляется только во время матча: пока игрок в меню, никакого
+-- Humanoid'а нет, а значит и WASD'ить негде. MatchService.start вызывает
+-- player:LoadCharacter() явно, MatchService.leave — Destroy.
+Players.CharacterAutoLoads = false
+
 local Services = ServerScriptService:WaitForChild("Services")
 local Handlers = ServerScriptService:WaitForChild("Handlers")
 

@@ -29,9 +29,19 @@ end
 
 function MainMenuUI.build()
 	local pg = Players.LocalPlayer:WaitForChild("PlayerGui")
+
+	-- Уничтожаем дубликаты (напр. от старых скриптов в Studio)
+	for _, child in ipairs(pg:GetChildren()) do
+		if child:IsA("ScreenGui") and child.Name == "MainMenu" then
+			child:Destroy()
+		end
+	end
+
 	screen = Instance.new("ScreenGui")
 	screen.Name = "MainMenu"
+	screen.Enabled = false
 	screen.ResetOnSpawn = false
+	screen.DisplayOrder = 10
 	screen.Parent = pg
 
 	local title = Instance.new("TextLabel")
